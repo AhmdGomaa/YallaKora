@@ -1,0 +1,28 @@
+﻿@model Court
+@{
+    ViewData["Title"] = "Edit Court";
+}
+
+<div class="container py-5 text-white col-md-6">
+    <h2 class="mb-4">✏️ Edit Court</h2>
+    <form asp-action="Edit" method="post" class="bg-dark p-4 rounded shadow">
+        <input type="hidden" asp-for="CourtId" />
+        <div class="mb-3">
+            <label class="form-label">Court Name</label>
+            <input asp-for="CourtName" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Description</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Price Per Hour</label>
+            <input asp-for="PricePerHour" class="form-control" type="number" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Image Name</label>
+            <input asp-for="CourtImage" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary w-100 fw-bold">Update Court</button>
+    </form>
+</div>

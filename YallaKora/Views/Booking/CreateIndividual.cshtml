@@ -1,0 +1,163 @@
+﻿@model List<Court>
+@{
+    ViewData["Title"] = "Book With Friends";
+    var Bookings = ViewData["Bookings"] as List<Booking>;
+    var days = new[] { "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+    var morningHours = new[] { 8, 9, 10, 11, 12, 13 };
+    var eveningHours = new[] { 16, 17, 18, 19, 20, 21 };
+    int currentUserId = Context.Session.GetInt32("UserId") ?? 0;
+}
+
+@foreach (var court in Model)
+{
+
+    if ( court.Description.Contains("5"))
+    {
+        string accordionId = $"accordion{court.CourtId}";
+
+        <div class="container my-5">
+            <!-- Court Info -->
+            <div class="card bg-dark text-white border-secondary mb-3">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="~/Assets/@court.CourtImage"
+                             class="img-fluid rounded-start"
+                             style="height:200px; object-fit:cover;">
+                    </div>
+                    <div class="col-md-8">
+                        <div class="card-body">
+                            <h4 class="card-title fw-bold">@court.CourtName</h4>
+                            <p class="card-text text-muted">@court.Description</p>
+                            <p class="card-text">
+                                <span class="badge bg-success">@court.PricePerHour L.E / Hour</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accordion -->
+            <div class="accordion" id="@accordionId">
+                @foreach (var day in days)
+                {
+                    string collapseId = $"collapse{court.CourtId}{day}";
+                    string headerId = $"header{court.CourtId}{day}";
+
+                    <div class="accordion-item bg-dark text-white border-secondary">
+                        <h2 class="accordion-header" id="@headerId">
+                            <button class="accordion-button collapsed bg-dark text-white"
+                                    type="button"
+                                    data-bs-toggle="collapse"
+                                    data-bs-target="#@collapseId"
+                                    aria-expanded="false">
+                                📅 @day
+                            </button>
+                        </h2>
+                        <div id="@collapseId"
+                             class="accordion-collapse collapse"
+                             data-bs-parent="#@accordionId">
+                            <div class="accordion-body">
+
+                                <!-- Morning -->
+                                <h6 class="text-warning mb-3">🌅 Morning</h6>
+                                <div class="row g-2 mb-4">
+                                    @foreach (var hour in morningHours)
+                                    {
+                                        bool isBooked = Bookings?.Any(b =>
+                                            b.CourtId == court.CourtId &&
+                                            b.StartDate.Hour == hour &&
+                                            b.Date.DayOfWeek.ToString() == day) ?? false;
+
+                                        var existingBooking = Bookings?.FirstOrDefault(b =>
+                                            b.CourtId == court.CourtId &&
+                                            b.StartDate.Hour == hour &&
+                                            b.Date.DayOfWeek.ToString() == day &&
+                                            b.UserId == currentUserId);
+
+                                        <div class="col-md-2 col-4">
+                                            <div class="card bg-secondary text-center p-2">
+                                                <small>@hour:00</small>
+                                                @{
+                                                    var bookingForSlot = Bookings?.FirstOrDefault(b =>
+                                                        b.CourtId == court.CourtId &&
+                                                        b.StartDate.Hour == hour &&
+                                                        b.Date.DayOfWeek.ToString() == day);
+
+                                                    var slot = (ViewData["Slots"] as List<Slot>)?.FirstOrDefault(s =>
+                                                            s.BookingId == bookingForSlot?.BookingId);
+                                                }
+
+                                                @if (isBooked)
+                                                {
+                                                    <span class="badge bg-danger mt-1 w-100">Not Available</span>
+                                                }
+                                                else
+                                                {
+                                                    <form method="post" asp-controller="Booking" asp-action="CreateIndividual">
+                                                        <input type="hidden" name="courtId" value="@court.CourtId">
+                                                        <input type="hidden" name="day" value="@day">
+                                                        <input type="hidden" name="hour" value="@hour">
+                                                        <button type="submit" class="btn btn-success btn-sm mt-1 w-100">Create</button>
+                                                    </form>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <!-- Evening -->
+                                <h6 class="text-info mb-3">🌙 Evening</h6>
+                                <div class="row g-2">
+                                    @foreach (var hour in eveningHours)
+                                    {
+                                        bool isBooked = Bookings?.Any(b =>
+                                            b.CourtId == court.CourtId &&
+                                            b.StartDate.Hour == hour &&
+                                            b.Date.DayOfWeek.ToString() == day) ?? false;
+
+                                        var existingBooking = Bookings?.FirstOrDefault(b =>
+                                            b.CourtId == court.CourtId &&
+                                            b.StartDate.Hour == hour &&
+                                            b.Date.DayOfWeek.ToString() == day &&
+                                            b.UserId == currentUserId &&
+                                            b.Type == "Individual"); // ← بس Individual
+                                        <div class="col-md-2 col-4">
+                                            <div class="card bg-secondary text-center p-2">
+                                                <small>@hour:00</small>
+                                                @{
+                                                    var bookingForSlotE = Bookings?.FirstOrDefault(b =>
+                                                        b.CourtId == court.CourtId &&
+                                                        b.StartDate.Hour == hour &&
+                                                        b.Date.DayOfWeek.ToString() == day);
+
+                                                    var slotE = (ViewData["Slots"] as List<Slot>)?.FirstOrDefault(s =>
+                                                            s.BookingId == bookingForSlotE?.BookingId);
+                                                }
+
+                                                @if (isBooked)
+                                                {
+                                                    <span class="badge bg-danger mt-1 w-100">Not Available</span>
+                                                }
+                                                else
+                                                {
+                                                    <form method="post" asp-controller="Booking" asp-action="CreateIndividual">
+                                                        <input type="hidden" name="courtId" value="@court.CourtId">
+                                                        <input type="hidden" name="day" value="@day">
+                                                        <input type="hidden" name="hour" value="@hour">
+                                                        <button type="submit" class="btn btn-success btn-sm mt-1 w-100">Create</button>
+                                                    </form>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+   
+}

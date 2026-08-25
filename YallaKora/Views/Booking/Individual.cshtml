@@ -1,0 +1,104 @@
+﻿@model List<Booking>
+@{
+    ViewData["Title"] = "Slot padge";
+    var Bookings = Model;
+    var Slots = ViewData["Slots"] as List<Slot>;
+    var SlotPlayers = ViewData["SlotPlayers"] as List<SlotPlayer>;
+}
+
+<div class="container my-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h3 class="fw-bold text-white">⚽ Individual Matches</h3>
+            <p class="text-muted">Join an existing match or create your own!</p>
+        </div>
+        <a asp-controller="Booking"
+           asp-action="CreateIndividual"
+           class="btn btn-success px-4 py-2 rounded-pill fw-bold shadow-sm">
+            ➕ Create New Match
+        </a>
+    </div>
+    <hr class="border-secondary">
+</div>
+
+    <div class="accordion" id="matchesAccordion">
+        @foreach (var Booking in Bookings)
+        {
+            var collapseId = "collapse_" + Booking.BookingId;
+            var headingId = "heading_" + Booking.BookingId;
+
+            <div class="accordion-item mb-2">
+           
+                <h2 class="accordion-header" id="@headingId">
+                    <button class="accordion-button collapsed" type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#@collapseId"
+                            aria-expanded="false"
+                            aria-controls="@collapseId">
+                        Join as an individual player at @Booking.Date.DayOfWeek
+                    </button>
+                </h2>
+                <div id="@collapseId"
+                     class="accordion-collapse collapse"
+                     aria-labelledby="@headingId"
+                     data-bs-parent="#matchesAccordion">
+                  
+                    <div class="accordion-body">
+                        <ul class="list-group">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Date
+                                <span class="badge bg-primary rounded-pill">@Booking.Date.ToString("MM-dd-yyyy")</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                StartDate
+                                <span class="badge bg-primary rounded-pill">@Booking.StartDate.ToString("hh:00")</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                EndDate
+                                <span class="badge bg-primary rounded-pill">@Booking.EndDate.ToString("hh:00")</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Status
+                                <span class="badge bg-primary rounded-pill">
+                                    @Slots?.FirstOrDefault(s => s.BookingId == Booking.BookingId)?.Status
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Current Players
+                                <span class="badge bg-primary rounded-pill">
+                                    @Slots?.FirstOrDefault(s => s.BookingId == Booking.BookingId)?.CurrentPlayers
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Players Left
+                                @{
+                                    var slot = Slots?.FirstOrDefault(s => s.BookingId == Booking.BookingId);
+                                    int remainingPlayers = 10 - (slot?.CurrentPlayers ?? 0);
+                                }
+                                <span class="badge bg-primary rounded-pill">@remainingPlayers</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @{
+                                    var slot1 = Slots?.FirstOrDefault(s => s.BookingId == Booking.BookingId);
+                                }
+                                @if (slot1 != null)
+                                {
+                                    <a asp-controller="Booking"
+                                       asp-action="IndividualView"
+                                       asp-route-id="@slot1.SlotId"
+                                       class="btn text-white w-100 fw-bold"
+                                       style="background-color: var(--bs-accordion-active-bg);">
+                                        Join
+                                    </a>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-secondary w-100" disabled>No Slot Available</button>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        }
+    </div> 

@@ -1,0 +1,257 @@
+﻿@model List<Court>
+@{
+    ViewData["Title"] = "Team vs Team";
+    var Bookings = ViewData["Bookings"] as List<Booking>;
+    var Users = ViewData["Users"] as List<User>;
+    var days = new[] { "Saturday", "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" };
+    var morningHours = new[] { 8, 9, 10, 11, 12, 13 };
+    var eveningHours = new[] { 16, 17, 18, 19, 20, 21 };
+    int currentUserId = Context.Session.GetInt32("UserId") ?? 0;
+}
+
+@foreach (var court in Model)
+{
+    string accordionId = $"accordion{court.CourtId}";
+
+    <div class="container my-5">
+        <div class="card bg-dark text-white border-secondary mb-3">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    <img src="~/Assets/@court.CourtImage"
+                         class="img-fluid rounded-start"
+                         style="height:200px; object-fit:cover;">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <h4 class="card-title fw-bold">@court.CourtName</h4>
+                        <p class="card-text text-muted">@court.Description</p>
+                        <p class="card-text">
+                            <span class="badge bg-success">@court.PricePerHour L.E / Hour</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion" id="@accordionId">
+            @foreach (var day in days)
+            {
+                string collapseId = $"collapse{court.CourtId}{day}";
+                string headerId = $"header{court.CourtId}{day}";
+
+                <div class="accordion-item bg-dark text-white border-secondary">
+                    <h2 class="accordion-header" id="@headerId">
+                        <button class="accordion-button collapsed bg-dark text-white"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#@collapseId"
+                                aria-expanded="false">
+                            📅 @day
+                        </button>
+                    </h2>
+                    <div id="@collapseId"
+                         class="accordion-collapse collapse"
+                         data-bs-parent="#@accordionId">
+                        <div class="accordion-body">
+
+                            <!-- Morning -->
+                            <h6 class="text-warning mb-3">🌅 Morning</h6>
+                            <div class="row g-2 mb-4">
+                                @foreach (var hour in morningHours)
+                                {
+                                    bool isBooked = Bookings?.Any(b =>
+                                        b.CourtId == court.CourtId &&
+                                        b.StartDate.Hour == hour &&
+                                        b.Date.DayOfWeek.ToString() == day) ?? false;
+
+                                    var booking = Bookings?.FirstOrDefault(b =>
+                                        b.CourtId == court.CourtId &&
+                                        b.StartDate.Hour == hour &&
+                                        b.Date.DayOfWeek.ToString() == day &&
+                                        b.Type == "TeamVsTeam");
+
+                                    var homeUser = booking != null ? Users?.FirstOrDefault(u => u.UserId == booking.UserId) : null;
+                                    var awayUser = booking?.OpponentUserId != null ? Users?.FirstOrDefault(u => u.UserId == booking.OpponentUserId) : null;
+
+                                    <div class="col-md-4 col-6">
+                                        <div class="card bg-secondary text-center p-2">
+                                            <small class="mb-2">@hour:00</small>
+
+                                            @if (booking != null)
+                                            {
+                                                <div class="d-flex justify-content-around align-items-center">
+                                                    <div class="text-center">
+                                                        <img src="@homeUser?.ProfileImage"
+                                                             class="rounded-circle mb-1"
+                                                             width="40" height="40"
+                                                             style="object-fit:cover;">
+                                                        <div class="small">@homeUser?.FirstName @homeUser?.LastName</div>
+                                                        <div class="small">Team</div>
+                                                        @if (booking.UserId == currentUserId)
+                                                        {
+                                                            <form method="post" asp-controller="Booking" asp-action="LeaveTeamVsTeam">
+                                                                <input type="hidden" name="bookingId" value="@booking.BookingId">
+                                                                <button type="submit" class="btn btn-danger btn-sm mt-1">Leave</button>
+                                                            </form>
+                                                        }
+                                                    </div>
+
+                                                    <div class="fw-bold text-warning mx-2">VS</div>
+
+                                                    <div class="text-center">
+                                                        @if (awayUser == null)
+                                                        {
+                                                            <div class="rounded-circle bg-dark mb-1 d-flex align-items-center justify-content-center mx-auto"
+                                                                 style="width:40px;height:40px;">
+                                                                <span>?</span>
+                                                            </div>
+                                                            <div class="small text-muted">Empty</div>
+                                                            @if (booking.UserId != currentUserId)
+                                                            {
+                                                                <form method="post" asp-controller="Booking" asp-action="JoinTeamVsTeam">
+                                                                    <input type="hidden" name="bookingId" value="@booking.BookingId">
+                                                                    <button type="submit" class="btn btn-primary btn-sm mt-1">Join</button>
+                                                                </form>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="@awayUser.ProfileImage"
+                                                                 class="rounded-circle mb-1"
+                                                                 width="40" height="40"
+                                                                 style="object-fit:cover;">
+                                                            <div class="small">@awayUser.FirstName @awayUser.LastName</div>
+                                                            <div class="small">Team</div>
+                                                            @if (booking.OpponentUserId == currentUserId)
+                                                            {
+                                                                <form method="post" asp-controller="Booking" asp-action="LeaveTeamVsTeam">
+                                                                    <input type="hidden" name="bookingId" value="@booking.BookingId">
+                                                                    <button type="submit" class="btn btn-danger btn-sm mt-1">Leave</button>
+                                                                </form>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                            else if (isBooked)
+                                            {
+                                                <span class="badge bg-danger mt-1 w-100">Not Available</span>
+                                            }
+                                            else
+                                            {
+                                                <form method="post" asp-controller="Booking" asp-action="CreateTeamVsTeam">
+                                                    <input type="hidden" name="courtId" value="@court.CourtId">
+                                                    <input type="hidden" name="day" value="@day">
+                                                    <input type="hidden" name="hour" value="@hour">
+                                                    <button type="submit" class="btn btn-success btn-sm w-100">Book</button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Evening -->
+                            <h6 class="text-info mb-3">🌙 Evening</h6>
+                            <div class="row g-2">
+                                @foreach (var hour in eveningHours)
+                                {
+                                    bool isBooked = Bookings?.Any(b =>
+                                        b.CourtId == court.CourtId &&
+                                        b.StartDate.Hour == hour &&
+                                        b.Date.DayOfWeek.ToString() == day) ?? false;
+
+                                    var booking = Bookings?.FirstOrDefault(b =>
+                                        b.CourtId == court.CourtId &&
+                                        b.StartDate.Hour == hour &&
+                                        b.Date.DayOfWeek.ToString() == day &&
+                                        b.Type == "TeamVsTeam");
+
+                                    var homeUser = booking != null ? Users?.FirstOrDefault(u => u.UserId == booking.UserId) : null;
+                                    var awayUser = booking?.OpponentUserId != null ? Users?.FirstOrDefault(u => u.UserId == booking.OpponentUserId) : null;
+
+                                    <div class="col-md-4 col-6">
+                                        <div class="card bg-secondary text-center p-2">
+                                            <small class="mb-2">@hour:00</small>
+
+                                            @if (booking != null)
+                                            {
+                                                <div class="d-flex justify-content-around align-items-center">
+                                                    <div class="text-center">
+                                                        <img src="@homeUser?.ProfileImage"
+                                                             class="rounded-circle mb-1"
+                                                             width="40" height="40"
+                                                             style="object-fit:cover;">
+                                                        <div class="small">@homeUser?.FirstName @homeUser?.LastName</div>
+                                                        <div class="small">Team</div>
+                                                        @if (booking.UserId == currentUserId)
+                                                        {
+                                                            <form method="post" asp-controller="Booking" asp-action="LeaveTeamVsTeam">
+                                                                <input type="hidden" name="bookingId" value="@booking.BookingId">
+                                                                <button type="submit" class="btn btn-danger btn-sm mt-1">Leave</button>
+                                                            </form>
+                                                        }
+                                                    </div>
+
+                                                    <div class="fw-bold text-warning mx-2">VS</div>
+
+                                                    <div class="text-center">
+                                                        @if (awayUser == null)
+                                                        {
+                                                            <div class="rounded-circle bg-dark mb-1 d-flex align-items-center justify-content-center mx-auto"
+                                                                 style="width:40px;height:40px;">
+                                                                <span>?</span>
+                                                            </div>
+                                                            <div class="small text-muted">Empty</div>
+                                                            @if (booking.UserId != currentUserId)
+                                                            {
+                                                                <form method="post" asp-controller="Booking" asp-action="JoinTeamVsTeam">
+                                                                    <input type="hidden" name="bookingId" value="@booking.BookingId">
+                                                                    <button type="submit" class="btn btn-primary btn-sm mt-1">Join</button>
+                                                                </form>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="@awayUser.ProfileImage"
+                                                                 class="rounded-circle mb-1"
+                                                                 width="40" height="40"
+                                                                 style="object-fit:cover;">
+                                                            <div class="small">@awayUser.FirstName @awayUser.LastName</div>
+                                                            <div class="small">Team</div>
+                                                            @if (booking.OpponentUserId == currentUserId)
+                                                            {
+                                                                <form method="post" asp-controller="Booking" asp-action="LeaveTeamVsTeam">
+                                                                    <input type="hidden" name="bookingId" value="@booking.BookingId">
+                                                                    <button type="submit" class="btn btn-danger btn-sm mt-1">Leave</button>
+                                                                </form>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            }
+                                            else if (isBooked)
+                                            {
+                                                <span class="badge bg-danger mt-1 w-100">Not Available</span>
+                                            }
+                                            else
+                                            {
+                                                <form method="post" asp-controller="Booking" asp-action="CreateTeamVsTeam">
+                                                    <input type="hidden" name="courtId" value="@court.CourtId">
+                                                    <input type="hidden" name="day" value="@day">
+                                                    <input type="hidden" name="hour" value="@hour">
+                                                    <button type="submit" class="btn btn-success btn-sm w-100">Book</button>
+                                                </form>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}

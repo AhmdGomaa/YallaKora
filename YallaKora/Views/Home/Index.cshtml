@@ -1,0 +1,274 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+   
+    body {
+       
+        color: #c9d1d9;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, #161b22 0%, #0d1117 100%);
+        border-bottom: 1px solid #30363d;
+        padding: 90px 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        color: #ffffff;
+        letter-spacing: -0.5px;
+    }
+
+    .hero-lead {
+        color: #8b949e;
+        font-size: 1.25rem;
+    }
+
+    /* Cards Hover & Transitions */
+    .feature-card {
+        background-color: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 16px;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #238636, #58a6ff);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: #238636;
+            box-shadow: 0 15px 35px rgba(35, 134, 54, 0.15);
+            background-color: #1c2128;
+        }
+
+            .feature-card:hover::before {
+                opacity: 1;
+            }
+
+    .card-icon {
+        font-size: 45px;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover .card-icon {
+        transform: scale(1.15) rotate(5deg);
+    }
+
+    /* How It Works Section */
+    .how-it-works-section {
+        background-color: #161b22;
+        border-top: 1px solid #30363d;
+        border-bottom: 1px solid #30363d;
+        padding: 70px 0;
+    }
+
+    .step-box {
+        background-color: #21262d;
+        border: 1px solid #30363d;
+        border-radius: 14px;
+        padding: 30px 20px;
+        height: 100%;
+        transition: all 0.3s ease;
+    }
+
+        .step-box:hover {
+            transform: translateY(-5px);
+            border-color: #58a6ff;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+    /* Buttons */
+    .btn-success-custom {
+        background-color: #238636;
+        color: #ffffff;
+        border: 1px solid rgba(240, 246, 252, 0.1);
+        border-radius: 30px;
+        padding: 12px 32px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-success-custom:hover {
+            background-color: #2ea043;
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(46, 160, 67, 0.4);
+            color: #fff;
+        }
+
+    .btn-outline-custom {
+        background-color: transparent;
+        color: #c9d1d9;
+        border: 1px solid #30363d;
+        border-radius: 30px;
+        padding: 12px 32px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-outline-custom:hover {
+            background-color: #21262d;
+            color: #ffffff;
+            border-color: #8b949e;
+            transform: scale(1.05);
+        }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section mb-5">
+    <div class="container text-center">
+        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill fw-bold mb-3 d-inline-block">
+            ⚽ Welcome to Yalla Kora
+        </span>
+        <h1 class="hero-title mb-3">Your Ultimate Sports Court Booking Platform</h1>
+        <p class="hero-lead mb-4">Book courts, challenge players, and manage your games seamlessly.</p>
+        <div class="d-flex justify-content-center gap-3">
+            @if (Context.Session.GetInt32("UserId") != null)
+            {
+                <a asp-controller="Booking" asp-action="BookingType" class="btn btn-success-custom">Book Now</a>
+            }
+            else
+            {
+                <a asp-controller="Account" asp-action="Register" class="btn btn-success-custom">Book Now</a>
+            }
+            
+            <a asp-controller="Court" asp-action="Index" class="btn btn-outline-custom">View Courts</a>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container mb-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold text-white">Why Yalla Kora?</h2>
+        <p class="text-muted">Discover all the features designed for sports enthusiasts.</p>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-3 text-center">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <div class="card-icon mb-3">🏟️</div>
+                    <h5 class="card-title fw-bold text-white">Book a Court</h5>
+                    <p class="card-text text-muted small">Easily book football courts online in seconds.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-3 text-center">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <div class="card-icon mb-3">👥</div>
+                    <h5 class="card-title fw-bold text-white">Play With Friends</h5>
+                    <p class="card-text text-muted small">Book a court with your friends and enjoy a great game together.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-3 text-center">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <div class="card-icon mb-3">⚔️</div>
+                    <h5 class="card-title fw-bold text-white">Challenge Others</h5>
+                    <p class="card-text text-muted small">Challenge other players and compete in exciting matches.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-3 text-center">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <div class="card-icon mb-3">🎓</div>
+                    <h5 class="card-title fw-bold text-white">Academy Booking</h5>
+                    <p class="card-text text-muted small">Academies can book courts for training sessions easily.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-3 text-center">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <div class="card-icon mb-3">⭐</div>
+                    <h5 class="card-title fw-bold text-white">Rate Players</h5>
+                    <p class="card-text text-muted small">Review and rate other players after your matches.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-3 text-center">
+                <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                    <div class="card-icon mb-3">🏆</div>
+                    <h5 class="card-title fw-bold text-white">Join Slots</h5>
+                    <p class="card-text text-muted small">Join individual slots and get matched with other players.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works -->
+<div class="how-it-works-section mb-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold text-white">How It Works</h2>
+            <p class="text-muted">Get started in 4 simple steps</p>
+        </div>
+        <div class="row text-center g-4">
+            <div class="col-md-3">
+                <div class="step-box">
+                    <div class="fs-1 mb-2">1️⃣</div>
+                    <h5 class="fw-bold text-white">Register</h5>
+                    <p class="text-muted small mb-0">Create your account in seconds</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-box">
+                    <div class="fs-1 mb-2">2️⃣</div>
+                    <h5 class="fw-bold text-white">Choose a Court</h5>
+                    <p class="text-muted small mb-0">Browse available courts</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-box">
+                    <div class="fs-1 mb-2">3️⃣</div>
+                    <h5 class="fw-bold text-white">Book</h5>
+                    <p class="text-muted small mb-0">Select your time and book</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-box">
+                    <div class="fs-1 mb-2">4️⃣</div>
+                    <h5 class="fw-bold text-white">Play</h5>
+                    <p class="text-muted small mb-0">Show up and enjoy your game</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="container text-center mb-5 py-4">
+    <h2 class="fw-bold text-white mb-2">Ready to Play?</h2>
+    <p class="lead text-muted mb-4">Join thousands of players booking courts every day</p>
+
+    <a asp-controller="Profile" asp-action="UsersList" class="btn btn-success-custom btn-lg">See Our Users</a>
+</div>

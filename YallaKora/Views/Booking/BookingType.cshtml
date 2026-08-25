@@ -1,0 +1,125 @@
+﻿@{
+    ViewData["Title"] = "Booking Options";
+}
+
+<style>
+    body {
+        
+        color: #e6edf3 !important;
+    }
+
+    .booking-card {
+        background-color: #111827;
+        border: 1px solid #1f2937;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+        .booking-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-5px);
+        }
+
+    .card-icon-wrapper {
+        width: 70px;
+        height: 70px;
+        background-color: #1f2937;
+        border: 1px solid #374151;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        margin: 0 auto 20px auto;
+        font-size: 1.8rem;
+    }
+
+    .btn-custom-primary {
+        background-color: #2563eb;
+        border: none;
+        color: #ffffff;
+        font-weight: 700;
+        border-radius: 50px;
+        padding: 10px 25px;
+        transition: background-color 0.2s ease;
+    }
+
+        .btn-custom-primary:hover {
+            background-color: #1d4ed8;
+            color: #fff;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="row text-center mb-5">
+        <div class="col-12">
+            <h2 class="fw-bold text-white mb-2">⚽ Choose Your Booking Type</h2>
+            <p class="text-muted">Select how you want to play and enjoy your match on our courts.</p>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+        <!-- 1. Individual Card -->
+        <div class="col-md-4 col-sm-6">
+            <div class="booking-card p-4 text-center d-flex flex-column justify-content-between">
+                <div>
+                    <div class="card-icon-wrapper text-primary">
+                        👤
+                    </div>
+                    <h4 class="fw-bold text-white mb-3">Individual</h4>
+                    <p class="text-muted small mb-4">
+                        Book a spot as an individual player and join an open match or slots with other players.
+                    </p>
+                </div>
+                <div>
+                    <a asp-controller="Booking" asp-action="Individual" class="btn btn-custom-primary w-100">
+                        Book Individual
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Team vs Team Card -->
+        <div class="col-md-4 col-sm-6">
+            <div class="booking-card p-4 text-center d-flex flex-column justify-content-between">
+                <div>
+                    <div class="card-icon-wrapper text-warning">
+                        ⚔️
+                    </div>
+                    <h4 class="fw-bold text-white mb-3">Team vs Team</h4>
+                    <p class="text-muted small mb-4">
+                        Challenge another team! Book a court and set up a competitive match between two complete teams.
+                    </p>
+                </div>
+                <div>
+                    <a asp-controller="Booking" asp-action="TeamVsTeam" class="btn btn-custom-primary w-100">
+                        Book Team Match
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Friends Card -->
+        <div class="col-md-4 col-sm-6">
+            <div class="booking-card p-4 text-center d-flex flex-column justify-content-between">
+                <div>
+                    <div class="card-icon-wrapper text-success">
+                        👥
+                    </div>
+                    <h4 class="fw-bold text-white mb-3">Friends</h4>
+                    <p class="text-muted small mb-4">
+                        Reserve a private court session and invite your friends for a friendly game or training.
+                    </p>
+                </div>
+                <div>
+                    <a asp-controller="Booking" asp-action="WithFriends" class="btn btn-custom-primary w-100">
+                        Book With Friends
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

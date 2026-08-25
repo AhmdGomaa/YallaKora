@@ -1,0 +1,110 @@
+﻿@model YallaKora.Models.User
+
+@{
+    ViewData["Title"] = "Edit Profile";
+}
+
+<style>
+    body {
+        background-color: #0b0f19 !important;
+        color: #e6edf3 !important;
+    }
+
+    .edit-card {
+        background-color: #111827;
+        border: 1px solid #1f2937;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    }
+
+    .form-control-dark {
+        background-color: #1f2937 !important;
+        border: 1px solid #374151 !important;
+        color: #e6edf3 !important;
+        border-radius: 10px;
+        padding: 12px;
+    }
+
+        .form-control-dark:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+            color: #fff !important;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7">
+            <div class="card edit-card p-4 p-md-5">
+
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-white">✏️ Edit Profile</h2>
+                    <p class="text-muted small">Update your personal information and player details</p>
+                </div>
+
+                <form asp-action="Edit" method="post">
+                   
+                    <input type="hidden" asp-for="UserId" />
+
+                    <div class="row g-3">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small fw-bold">First Name</label>
+                            <input asp-for="FirstName" class="form-control form-control-dark" required />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small fw-bold">Last Name</label>
+                            <input asp-for="LastName" class="form-control form-control-dark" required />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small fw-bold">Username</label>
+                            <input asp-for="UserName" class="form-control form-control-dark" required />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small fw-bold">Email Address</label>
+                            <input asp-for="Email" class="form-control form-control-dark" type="email" required />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small fw-bold">Phone Number</label>
+                            <input asp-for="PhoneNumber" class="form-control form-control-dark" />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small fw-bold">Age</label>
+                            <input asp-for="Age" class="form-control form-control-dark" type="number" />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small fw-bold">Position</label>
+                            <input asp-for="UserPosition" class="form-control form-control-dark" placeholder="e.g. Forward, Midfielder..." />
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label text-muted small fw-bold">Profile Image URL</label>
+                            <input asp-for="ProfileImage" class="form-control form-control-dark" placeholder="/images/..." />
+                        </div>
+
+                        <div class="col-12 mb-4">
+                            <label class="form-label text-muted small fw-bold">Address</label>
+                            <input asp-for="Address" class="form-control form-control-dark" />
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 justify-content-center">
+                        <a asp-action="Index" asp-route-id="@Model.UserId" class="btn btn-outline-light px-4 py-2 rounded-pill fw-semibold">
+                            Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary px-5 py-2 rounded-pill fw-bold">
+                            Save Changes
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>

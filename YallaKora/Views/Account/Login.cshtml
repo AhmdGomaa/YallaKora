@@ -1,0 +1,42 @@
+﻿
+@{
+    ViewData["Title"] = "Login Page";
+    string EmailInput=string.Empty;
+    string PasswordInput=string.Empty;
+    
+}
+
+<div class="container">
+    <h4 class="display-4">Login to your Profile</h4>
+
+    <hr>
+</div>
+
+
+<form class="container align-content-center" method="post" asp-controller="Account" asp-action="Login" data--h-bstatus="0OBSERVED">
+    <fieldset data--h-bstatus="0OBSERVED">
+
+        <div data--h-bstatus="0OBSERVED">
+            
+            <label name="email" class="form-label mt-4" data--h-bstatus="0OBSERVED">Email </label>
+            <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" data--h-bstatus="0OBSERVED">
+            <small class="form-text text-muted" data--h-bstatus="0OBSERVED">We'll never share your email with anyone else.</small>
+            
+
+        </div>
+        <div class="mb-3" data--h-bstatus="0OBSERVED">
+            <label name="password" class="form-label mt-4" data--h-bstatus="0OBSERVED">Password</label>
+            <input type="password" name="password" class="form-control" id="exampleInputPassword1" placeholder="Password" autocomplete="off" data--h-bstatus="0OBSERVED">
+            
+            <small  class="form-text text-muted" data--h-bstatus="0OBSERVED">We'll never share your password with anyone else.</small>
+        </div>
+        
+
+        <button type="submit" class="btn btn-primary" data--h-bstatus="0OBSERVED">Submit</button>
+        
+        <div class="alert alert-dismissible alert-info mt-2" data--h-bstatus="0OBSERVED">
+            <button type="button" class="btn-close" data-bs-dismiss="alert" data--h-bstatus="0OBSERVED"></button>
+            <strong data--h-bstatus="0OBSERVED">You can <a asp-controller="Account" asp-action="Register" class="alert-link" data--h-bstatus="0OBSERVED">Register</a> , if you haven't an account</strong>
+        </div>
+    </fieldset>
+</form>
